@@ -1,15 +1,15 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Jatha;
+use common\models\Patient;
 
 /**
- * JathaSearch represents the model behind the search form of `common\models\Jatha`.
+ * PatientSearch represents the model behind the search form of `common\models\Patient`.
  */
-class JathaSearch extends Jatha
+class PatientSearch extends Patient
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class JathaSearch extends Jatha
     public function rules()
     {
         return [
-            [['id', 'reg_no', 'male', 'female', 'total', 'created_by'], 'integer'],
-            [['centre', 'destination', 'from_date', 'to_date', 'created_on','status'], 'safe'],
+            [['id', 'gender', 'jatha', 'status'], 'integer'],
+            [['name', 'f_h_name', 'age', 'admitted_date', 'discharge_date'], 'safe'],
         ];
     }
 
@@ -40,13 +40,12 @@ class JathaSearch extends Jatha
      */
     public function search($params)
     {
-        $query = Jatha::find();
+        $query = Patient::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort'=> ['defaultOrder' => ['reg_no'=>SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -60,19 +59,16 @@ class JathaSearch extends Jatha
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'reg_no' => $this->reg_no,
-            'male' => $this->male,
-            'female' => $this->female,
-            'total' => $this->total,
-            'from_date' => $this->from_date,
-            'to_date' => $this->to_date,
-            'created_on' => $this->created_on,
-            'created_by' => $this->created_by,
+            'gender' => $this->gender,
+            'jatha' => $this->jatha,
+            'admitted_date' => $this->admitted_date,
+            'discharge_date' => $this->discharge_date,
+            'status' => $this->status,
         ]);
 
-        $query->andFilterWhere(['like', 'centre', $this->centre])
-            ->andFilterWhere(['like', 'status', $this->status])
-            ->andFilterWhere(['like', 'destination', $this->destination]);
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'f_h_name', $this->f_h_name])
+            ->andFilterWhere(['like', 'age', $this->age]);
 
         return $dataProvider;
     }

@@ -41,11 +41,11 @@ class Jatha extends \yii\db\ActiveRecord
         return [
             [['reg_no', 'centre', 'male', 'female', 'destination', 'from_date', 'to_date'], 'required'],
             [['reg_no'], 'unique'],
-            [['centre', 'destination'], 'string'],
+            [['centre'], 'string'],
             [['to_date'], 'validateDate'],
-            [['reg_no', 'male', 'female', 'total', 'created_by'], 'integer'],
+            [['reg_no', 'male', 'female', 'total', 'created_by', 'destination', 'status'], 'integer'],
             [['from_date', 'to_date', 'created_on'], 'safe'],
-            [['centre', 'destination', 'status'], 'string', 'max' => 225],
+            [['centre'], 'string', 'max' => 225],
         ];
     }
 
@@ -91,4 +91,13 @@ class Jatha extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
         ];
     }
+    public function getDepartment($modelClass = '\common\models\Department')
+    {
+        return $this->hasOne($modelClass::className(), ['id' => 'destination']);
+    }
+    public function getCurrentStatus($modelClass = '\common\models\Status')
+    {
+        return $this->hasOne($modelClass::className(), ['id' => 'status']);
+    }
+
 }

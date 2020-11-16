@@ -26,7 +26,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index','report'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -62,6 +62,11 @@ class SiteController extends Controller
     {
         return $this->redirect(['jatha/index']);
 //        return $this->render('index');
+    }
+    public function actionReport()
+    {
+        $model = \common\models\Jatha::find()->where('status != 3')->all();
+       return $this->render('index',['model'=>$model]);
     }
 
     /**

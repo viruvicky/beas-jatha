@@ -2,18 +2,17 @@
 
 namespace backend\controllers;
 
-use common\models\PatientSearch;
 use Yii;
-use common\models\Jatha;
-use backend\models\JathaSearch;
+use common\models\Patient;
+use common\models\PatientSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * JathaController implements the CRUD actions for Jatha model.
+ * PatientController implements the CRUD actions for Patient model.
  */
-class JathaController extends Controller
+class PatientController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -31,12 +30,13 @@ class JathaController extends Controller
     }
 
     /**
-     * Lists all Jatha models.
+     * Lists all Patient models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($jatha = null)
     {
-        $searchModel = new JathaSearch();
+        $searchModel = new PatientSearch();
+        if($jatha){$searchModel->jatha =$jatha; }
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -46,52 +46,49 @@ class JathaController extends Controller
     }
 
     /**
-     * Displays a single Jatha model.
+     * Displays a single Patient model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        $searchModel = new PatientSearch();
-        $searchModel->jatha =  $id;
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Creates a new Jatha model.
+     * Creates a new Patient model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Jatha();
-       $model->status = '1';
+        $model = new Patient();
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->total = $model->male + $model->female;
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Sewa Jatha created successfully');
+        if ($model->load(Yii::$app->request->post()) ) {
+            if($model->validate()) {
+                $model->admitted_date = date('Y-m-d', strtotime($model->admitted_date));
+                $model->discharge_date = date('Y-m-d', strtotime($model->discharge_date));
+                $model->save(false);
+                Yii::$app->session->setFlash('success', 'Record created successfully');
                 return $this->redirect(['index']);
-            } else  {
+            }
+            else{
                 return $this->render('create', [
                     'model' => $model,
                 ]);
             }
         }
+
         return $this->render('create', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Updates an existing Jatha model.
+     * Updates an existing Patient model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -101,53 +98,29 @@ class JathaController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->total = $model->male + $model->female;
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Sewa Jatha updated successfully');
+        if ($model->load(Yii::$app->request->post()) ) {
+
+            if ($model->validate()) {
+                $model->admitted_date = date('Y-m-d', strtotime($model->admitted_date));
+                $model->discharge_date = date('Y-m-d', strtotime($model->discharge_date));
+                $model->save(false);
+                Yii::$app->session->setFlash('success', 'Record updated successfully');
                 return $this->redirect(['index']);
-            } else  {
-                return $this->render('create', [
+            } else {
+                return $this->render('update', [
                     'model' => $model,
                 ]);
             }
         }
+        $model->admitted_date = date('d/m/Y',strtotime($model->admitted_date));
+        $model->discharge_date = date('d/m/Y',strtotime($model->discharge_date));
         return $this->render('update', [
             'model' => $model,
         ]);
     }
 
-    public function actionExport() {
-
-        return \moonland\phpexcel\Excel::export([
-            'isMultipleSheet' => false,
-            'models' => Jatha::find()->all(),
-            'asAttachment' => true,
-            'columns' => [
-                'reg_no',
-                'centre',
-                'male',
-                'female',
-                'total',
-                'destination',
-                [
-                    'attribute'=>'from_date',
-                    'value' => function($data){
-                        return date('d-M-Y',strtotime($data->from_date));
-                    }
-                ],
-                [
-                    'attribute'=>'to_date',
-                    'value' => function($data){
-                        return date('d-M-Y',strtotime($data->to_date));
-                    }
-                ],
-            ]
-        ]);
-    }
-
     /**
-     * Deletes an existing Jatha model.
+     * Deletes an existing Patient model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -161,18 +134,18 @@ class JathaController extends Controller
     }
 
     /**
-     * Finds the Jatha model based on its primary key value.
+     * Finds the Patient model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Jatha the loaded model
+     * @return Patient the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Jatha::findOne($id)) !== null) {
+        if (($model = Patient::findOne($id)) !== null) {
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

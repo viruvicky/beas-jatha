@@ -1,0 +1,10 @@
+.red {
+    background: red;
+    color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+}
+.btn {
+    padding: 0px 6px;}

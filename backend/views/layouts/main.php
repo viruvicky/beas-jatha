@@ -42,7 +42,11 @@ AppAsset::register($this);
         ];
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
+        $menuItems[] = ['label' => 'Report', 'url' => ['/site/report']];
         $menuItems[] = ['label' => 'Jatha', 'url' => ['/jatha/index']];
+        $menuItems[] = ['label' => 'Patient', 'url' => ['/patient/index']];
+        $menuItems[] = ['label' => 'Departments', 'url' => ['/department/index']];
+        $menuItems[] = ['label' => 'Status', 'url' => ['/status/index']];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
