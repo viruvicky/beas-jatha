@@ -122,32 +122,63 @@ class JathaController extends Controller
     }
 
     public function actionExport() {
+        $model = new Jatha();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->from_date && $model->to_date) {
+                $query = 'from_date >="' . $model->from_date . '" AND from_date <="' . $model->to_date.'"';
+            } elseif ($model->from_date && $model->to_date == '') {
+                $query = 'from_date >="' . $model->from_date.'"';
+            } elseif ($model->from_date == '' && $model->to_date) {
+                $query = 'from_date <="' . $model->to_date.'"';
+            } else {
+                return $this->refresh();
+                exit;
+            }
+            $query .= ' AND status = 1';
+            $Exportmodel = Jatha::find()->where($query)->all();
+            if ($Exportmodel) {
+                return \moonland\phpexcel\Excel::export([
+                    'isMultipleSheet' => false,
+                    'models' => $Exportmodel,
+                    'asAttachment' => true,
+                    'columns' => [
+                        'reg_no',
+                        'centre',
+                        'male',
+                        'female',
+                        'total',
+                        [
+                            'attribute'=>'destination',
+                            'value'=>function ($data) {
+                                return ($data->department)?$data->department->name:'--';
+                            },
+                        ],
+                        [
+                            'attribute' => 'from_date',
+                            'value' => function ($data) {
+                                return date('d-M-Y', strtotime($data->from_date));
+                            }
+                        ],
+                        [
+                            'attribute' => 'to_date',
+                            'value' => function ($data) {
+                                return date('d-M-Y', strtotime($data->to_date));
+                            }
+                        ],
+                    ]
+                ]);
+            }else{
+                Yii::$app->session->setFlash('success', 'Nothing to export');
+                return $this->render('export', [
+                    'model' => $model,
+                ]);
+            }
 
-        return \moonland\phpexcel\Excel::export([
-            'isMultipleSheet' => false,
-            'models' => Jatha::find()->all(),
-            'asAttachment' => true,
-            'columns' => [
-                'reg_no',
-                'centre',
-                'male',
-                'female',
-                'total',
-                'destination',
-                [
-                    'attribute'=>'from_date',
-                    'value' => function($data){
-                        return date('d-M-Y',strtotime($data->from_date));
-                    }
-                ],
-                [
-                    'attribute'=>'to_date',
-                    'value' => function($data){
-                        return date('d-M-Y',strtotime($data->to_date));
-                    }
-                ],
-            ]
-        ]);
+        }else{
+            return $this->render('export', [
+                'model' => $model,
+            ]);
+        }
     }
 
     /**
