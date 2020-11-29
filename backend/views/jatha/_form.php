@@ -10,10 +10,10 @@ use common\components\Lhelper;
 
 <div class="jatha-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['autocomplete' => 'off']]); ?>
         <div class="row">
             <div class="col-md-3">
-               <?= $form->field($model, 'reg_no')->textInput() ?>
+               <?= $form->field($model, 'reg_no')->textInput(['autocomplete'=>false]) ?>
                <?= $form->field($model, 'centre')->textInput(['maxlength' => true]) ?>
                <?= $form->field($model, 'male')->textInput() ?>
                <?= $form->field($model, 'female')->textInput() ?>

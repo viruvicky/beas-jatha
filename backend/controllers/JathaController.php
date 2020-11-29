@@ -72,7 +72,11 @@ class JathaController extends Controller
     public function actionCreate()
     {
         $model = new Jatha();
+        $lastModel = Jatha::find()->max('reg_no');
        $model->status = '1';
+       $model->reg_no = $lastModel+1;
+       $model->from_date = date('Y-m-d');
+       $model->to_date = date('Y-m-d',(strtotime ( '+13 day' , strtotime ( $model->from_date) ) ));
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->total = $model->male + $model->female;
