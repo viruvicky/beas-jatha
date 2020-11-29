@@ -19,7 +19,7 @@ use common\components\Lhelper;
 
     </div>
     <div class="col-md-6">
-        <?= $form->field($model, 'jatha')->dropDownList(Lhelper::getActiveJatha(), ['prompt' => Yii::t('app','Select Status')]) ?>
+        <?= $form->field($model, 'jatha')->dropDownList(Lhelper::getActiveJatha(), ['prompt' => Yii::t('app','Select Jatha')]) ?>
         <?php /*
         echo $form->field($model, 'admitted_date')->widget(\kartik\date\DatePicker::classname(), [
             'options' => ['placeholder' => "Select date ...",'readonly'=>true],

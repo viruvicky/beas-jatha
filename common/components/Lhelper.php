@@ -35,8 +35,14 @@ class Lhelper
     }
     public static function getActiveJatha()
     {
-        $data = ArrayHelper::map(\common\models\Jatha::find()->where('status != 3')->asArray()->all(), 'id', 'centre');
+       // $data = ArrayHelper::map(\common\models\Jatha::find()->where('status != 3')->asArray()->all(), 'id', 'Name');$data  = [];
+        $users = \common\models\Jatha::find()->where('status != 3')->all();
+
+        $data = ArrayHelper::map($users, 'id', function ($user) {
+            return '('.$user->reg_no.') '.$user->centre ;
+        });
         return $data;
+
     }
     public static function getTotalByDate($date){
         $jathas =   \common\models\Jatha::find()->where('status != 3 AND from_date="'.$date.'"')->all();
